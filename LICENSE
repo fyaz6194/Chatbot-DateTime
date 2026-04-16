@@ -1,0 +1,68 @@
+Chatbot-DateTime — Source-Available, No-Use License
+Version 1.0
+
+Copyright (c) 2026 Chatbot-DateTime authors. All rights reserved.
+
+This source code is made publicly visible for transparency and to allow
+community contributions. It is NOT open-source software. Your rights are
+limited to the following:
+
+
+1. PERMITTED USES
+
+   1.1 You may read, study, and review the source code.
+
+   1.2 You may fork this repository and propose changes (bug fixes, new
+       features, refactors) by submitting pull requests to the canonical
+       repository. Any code you submit as a contribution is licensed to the
+       project maintainers under the same terms as the rest of the project,
+       and may be merged, modified, or rejected at the maintainers' sole
+       discretion.
+
+   1.3 You may run the code on your own machine for the sole purpose of
+       preparing and testing a contribution described in section 1.2.
+
+
+2. PROHIBITED USES
+
+   Except as explicitly allowed in section 1, you may NOT:
+
+   2.1 Use the software, in whole or in part, for any purpose other than
+       preparing a contribution to this project.
+
+   2.2 Copy, extract, adapt, or reuse any portion of this code (including
+       source snippets, algorithms, configuration, schemas, and test data)
+       in any other project, product, service, or derivative work, whether
+       public, private, commercial, non-commercial, or educational.
+
+   2.3 Distribute, publish, sublicense, sell, rent, lease, or otherwise
+       make the software available to third parties, whether modified or
+       unmodified, except as an upstream pull request under section 1.2.
+
+   2.4 Remove or alter this license, the copyright notice, or any
+       attribution included in the source.
+
+
+3. NO WARRANTY
+
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+   OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT.
+   IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+   CLAIM, DAMAGES, OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+   TORT, OR OTHERWISE, ARISING FROM, OUT OF, OR IN CONNECTION WITH THE
+   SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+
+4. TERMINATION
+
+   Any use of the software outside the permitted scope in section 1
+   automatically terminates all rights granted under this license.
+
+
+5. GOVERNING TERMS
+
+   If any part of this license is found unenforceable, the remaining terms
+   continue to apply. This license is NOT an OSI-approved open-source
+   license and does NOT grant the freedoms associated with the Open Source
+   Definition or the Free Software Definition.

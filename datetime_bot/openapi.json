@@ -1,0 +1,272 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "datetime_bot",
+    "description": "Rule-based natural-language datetime parser with a strict ISO 8601 UTC output format and numeric status codes. Defaults: timezone Asia/Kolkata, date order DMY, valid window [now, now + 3 days].",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/parse": {
+      "post": {
+        "summary": "Parse a natural-language datetime into strict ISO 8601 UTC.",
+        "operationId": "parse_endpoint_parse_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ParseRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ParseSuccess"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation or range error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ParseError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "summary": "Liveness probe.",
+        "operationId": "health_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Health"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CodedField": {
+        "properties": {
+          "code": {
+            "type": "integer",
+            "title": "Code",
+            "description": "Stable numeric code."
+          },
+          "label": {
+            "type": "string",
+            "title": "Label",
+            "description": "Human-readable label for the code."
+          }
+        },
+        "type": "object",
+        "required": [
+          "code",
+          "label"
+        ],
+        "title": "CodedField"
+      },
+      "ErrorDetail": {
+        "properties": {
+          "code": {
+            "type": "integer",
+            "title": "Code",
+            "description": "Stable numeric code."
+          },
+          "label": {
+            "type": "string",
+            "title": "Label",
+            "description": "Human-readable label for the code."
+          },
+          "message": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Message"
+          }
+        },
+        "type": "object",
+        "required": [
+          "code",
+          "label"
+        ],
+        "title": "ErrorDetail"
+      },
+      "Health": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "title": "Status",
+            "examples": [
+              "ok"
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "status"
+        ],
+        "title": "Health"
+      },
+      "ParseError": {
+        "properties": {
+          "error": {
+            "$ref": "#/components/schemas/ErrorDetail",
+            "description": "Error codes: 10=multiple_datetimes, 11=out_of_range_future, 12=unparseable, 13=ambiguous_date, 14=llm_bad_response."
+          }
+        },
+        "type": "object",
+        "required": [
+          "error"
+        ],
+        "title": "ParseError"
+      },
+      "ParseRequest": {
+        "properties": {
+          "text": {
+            "type": "string",
+            "title": "Text",
+            "description": "Natural-language datetime text.",
+            "examples": [
+              "16 Apr 2026 10:00 PM",
+              "25/Apr/2026 06:00 AM",
+              "2026 25 04 08 00 AM"
+            ]
+          },
+          "timezone": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Timezone",
+            "description": "IANA timezone for the input. Defaults to Asia/Kolkata.",
+            "examples": [
+              "Asia/Kolkata",
+              "UTC",
+              "Asia/Karachi"
+            ]
+          },
+          "date_order": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^(DMY|MDY)$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Date Order",
+            "description": "Date-order hint for ambiguous numeric inputs. \"DMY\" (default) or \"MDY\".",
+            "examples": [
+              "DMY",
+              "MDY"
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "text"
+        ],
+        "title": "ParseRequest"
+      },
+      "ParseSuccess": {
+        "properties": {
+          "datetime": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+            "title": "Datetime",
+            "description": "Parsed datetime in the fixed format YYYY-MM-DDTHH:MM:SS.sssZ.",
+            "examples": [
+              "2026-04-16T16:30:00.000Z"
+            ]
+          },
+          "assumption": {
+            "items": {
+              "$ref": "#/components/schemas/CodedField"
+            },
+            "type": "array",
+            "title": "Assumption",
+            "description": "Assumptions applied during parsing. Codes: 0=none, 1=default_timezone_india, 2=default_date_order_dmy, 3=current_year_injected, 4=two_digit_year_expanded, 5=space_separated_normalized, 6=llm_fallback."
+          },
+          "treated_as": {
+            "$ref": "#/components/schemas/CodedField",
+            "description": "How the parsed datetime relates to the valid window. 1=past, 2=within_window, 3=far_future."
+          },
+          "valid_window": {
+            "$ref": "#/components/schemas/ValidWindow",
+            "description": "Allowed window [now_IST, now_IST + 3 days]. 1=in_window, 2=past_allowed, 3=out_of_range_future."
+          }
+        },
+        "type": "object",
+        "required": [
+          "datetime",
+          "assumption",
+          "treated_as",
+          "valid_window"
+        ],
+        "title": "ParseSuccess"
+      },
+      "ValidWindow": {
+        "properties": {
+          "code": {
+            "type": "integer",
+            "title": "Code",
+            "description": "Stable numeric code."
+          },
+          "label": {
+            "type": "string",
+            "title": "Label",
+            "description": "Human-readable label for the code."
+          },
+          "start": {
+            "type": "string",
+            "title": "Start",
+            "description": "Window start (inclusive), ISO 8601 UTC."
+          },
+          "end": {
+            "type": "string",
+            "title": "End",
+            "description": "Window end (inclusive), ISO 8601 UTC."
+          }
+        },
+        "type": "object",
+        "required": [
+          "code",
+          "label",
+          "start",
+          "end"
+        ],
+        "title": "ValidWindow"
+      }
+    }
+  }
+}
