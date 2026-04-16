@@ -5,7 +5,29 @@ Copyright (c) 2026 Chatbot-DateTime authors. All rights reserved.
 
 This source code is made publicly visible for transparency and to allow
 community contributions. It is NOT open-source software. Your rights are
-limited to the following:
+limited to the following.
+
+
+WHY THIS LICENSE IS RESTRICTIVE (RATIONALE)
+
+Chatbot-DateTime is an early-stage project. Before any form of
+third-party reuse becomes appropriate, the authors intend to complete:
+
+  (a) full functional testing across edge cases and locales;
+  (b) cybersecurity review (input fuzzing, injection resistance,
+      dependency vulnerability audit, authentication paths for the
+      optional LLM fallback);
+  (c) hardware/performance testing across target deployment profiles
+      (including low-RAM ARM environments);
+  (d) additional core features planned on the roadmap (see the project
+      README and issue tracker).
+
+Until that work is complete, permitting external reuse would risk
+exposing downstream users to untested behavior, unpatched security
+issues, or breaking changes. The restrictions below exist to protect
+both users and the project during this stabilization period. They may
+be relaxed in a future license version once the project reaches a
+production-ready state.
 
 
 1. PERMITTED USES
