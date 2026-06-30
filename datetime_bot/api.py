@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from contextlib import asynccontextmanager
 from typing import List, Optional
 
 from fastapi import FastAPI
@@ -12,7 +13,19 @@ from .parser import (
     parse,
 )
 
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Warm up dateparser locale loading so first real request is fast.
+    try:
+        parse("1 Jan 2026 10:00 AM", strict=False)
+    except Exception:
+        pass
+    yield
+
+
 app = FastAPI(
+    lifespan=lifespan,
     title="datetime_bot",
     version="1.0.0",
     description=(
