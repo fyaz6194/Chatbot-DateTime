@@ -35,6 +35,9 @@ Thumbs.db
 # Logs
 *.log
 
+# Private infrastructure notes (IPs, server details)
+INFRA.md
+
 # AWS Lambda handler + deployment artifacts (kept local only)
 lambda_function.py
 lambda-requirements.txt
