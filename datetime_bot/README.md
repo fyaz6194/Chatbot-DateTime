@@ -2,6 +2,8 @@
 
 A Python bot that accepts natural-language datetime text and returns a strict ISO 8601 UTC string, wrapped in a JSON envelope with machine-readable status codes. Used primarily to schedule GST portal downtime windows.
 
+> **Language:** Python 3.9 – 3.14 · tested on 3.11 · deployed on 3.14 (AWS Lambda, arm64).
+
 ## Defaults
 
 - **Timezone**: `Asia/Kolkata` (India) if none given.

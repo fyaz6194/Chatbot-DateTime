@@ -34,3 +34,9 @@ Thumbs.db
 
 # Logs
 *.log
+
+# AWS Lambda handler + deployment artifacts (kept local only)
+lambda_function.py
+lambda-requirements.txt
+lambda_build/
+*.zip

@@ -1,3 +1,7 @@
+from __future__ import annotations
+
+from typing import List, Optional
+
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
@@ -25,12 +29,12 @@ class ParseRequest(BaseModel):
         description="Natural-language datetime text.",
         examples=["16 Apr 2026 10:00 PM", "25/Apr/2026 06:00 AM", "2026 25 04 08 00 AM"],
     )
-    timezone: str | None = Field(
+    timezone: Optional[str] = Field(
         None,
         description="IANA timezone for the input. Defaults to Asia/Kolkata.",
         examples=["Asia/Kolkata", "UTC", "Asia/Karachi"],
     )
-    date_order: str | None = Field(
+    date_order: Optional[str] = Field(
         None,
         description='Date-order hint for ambiguous numeric inputs. "DMY" (default) or "MDY".',
         examples=["DMY", "MDY"],
@@ -55,7 +59,7 @@ class ParseSuccess(BaseModel):
         examples=["2026-04-16T16:30:00.000Z"],
         pattern=r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$",
     )
-    assumption: list[CodedField] = Field(
+    assumption: List[CodedField] = Field(
         ...,
         description=(
             "Assumptions applied during parsing. Codes: 0=none, 1=default_timezone_india, "
@@ -74,7 +78,7 @@ class ParseSuccess(BaseModel):
 
 
 class ErrorDetail(CodedField):
-    message: str | None = None
+    message: Optional[str] = None
 
 
 class ParseError(BaseModel):

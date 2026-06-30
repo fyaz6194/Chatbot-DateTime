@@ -1,5 +1,7 @@
 """Thin wrappers over jsonschema for strict input/output validation."""
 
+from __future__ import annotations
+
 from jsonschema import Draft202012Validator
 from jsonschema.exceptions import ValidationError as _JSValidationError
 

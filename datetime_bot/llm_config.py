@@ -10,6 +10,8 @@ the LLM is expected to return JSON of the form:
 `code` / `label` must match the ERROR_CODES table in `config.py`.
 """
 
+from __future__ import annotations
+
 import os
 
 
