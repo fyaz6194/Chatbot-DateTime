@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import time
 from contextlib import asynccontextmanager
 from typing import List, Optional
 
@@ -88,6 +89,10 @@ class ParseSuccess(BaseModel):
         ...,
         description="Allowed window [now_IST, now_IST + 3 days]. 1=in_window, 2=past_allowed, 3=out_of_range_future.",
     )
+    processing_time_ms: float = Field(
+        ...,
+        description="Server-side parse time in milliseconds.",
+    )
 
 
 class ErrorDetail(CodedField):
@@ -102,6 +107,7 @@ class ParseError(BaseModel):
             "12=unparseable, 13=ambiguous_date, 14=llm_bad_response."
         ),
     )
+    processing_time_ms: float = Field(..., description="Server-side parse time in milliseconds.")
 
 
 class Health(BaseModel):
@@ -115,27 +121,33 @@ class Health(BaseModel):
     summary="Parse a natural-language datetime into strict ISO 8601 UTC.",
 )
 def parse_endpoint(req: ParseRequest):
+    t0 = time.perf_counter()
     try:
         result = parse(req.text, tz=req.timezone, date_order=req.date_order)
     except MultipleDatetimesFound as e:
+        ms = round((time.perf_counter() - t0) * 1000, 2)
         return JSONResponse(
             status_code=422,
-            content={"error": {"code": 10, "label": "multiple_datetimes", "message": str(e)}},
+            content={"error": {"code": 10, "label": "multiple_datetimes", "message": str(e)}, "processing_time_ms": ms},
         )
     except OutOfRangeDatetime as e:
+        ms = round((time.perf_counter() - t0) * 1000, 2)
         return JSONResponse(
             status_code=422,
             content={
                 "error": {"code": 11, "label": "out_of_range_future", "message": str(e)},
                 "window": {"start": e.window_start_iso, "end": e.window_end_iso},
                 "parsed": e.parsed_iso,
+                "processing_time_ms": ms,
             },
         )
+    ms = round((time.perf_counter() - t0) * 1000, 2)
     if result is None:
         return JSONResponse(
             status_code=422,
-            content={"error": {"code": 12, "label": "unparseable", "input": req.text}},
+            content={"error": {"code": 12, "label": "unparseable", "input": req.text}, "processing_time_ms": ms},
         )
+    result["processing_time_ms"] = ms
     return result
 
 
